@@ -1,0 +1,79 @@
+.musicPlayer-Section{
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.3fr;
+  height: 90vh;
+  color: white;
+  overflow: hidden; 
+  
+}
+
+
+.musicPlayer-Section__playlist > ul{
+  display: block;
+  width: 100%;
+  
+}
+.musicPlayer-Section__playlist > ul > li{
+  display: flex;
+  padding: 18px 0px 8px 10px;
+  width: 90%;
+  align-items: center;
+  text-align: start;
+  
+
+}
+.playlist-element__title{
+  font-size: 26px;
+}
+.playlist-element__content-info{
+  margin-left: 20px;
+}
+.playlist-element__time{
+  width: 100%;
+  display: flex;
+  justify-content:end ;
+  padding-right: 30px;
+}
+
+.playlist-element__photo{
+  border-radius: 20px;
+  width: 80px;
+  height: 80px;
+  background-image: url(/media/photos/guy.jpg);
+  flex-shrink: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+/* disc */
+.musicPlayer-Section__disc{
+  
+  position: relative;
+}
+.musicPlayer-Section__disc img{
+  position: absolute;
+  width: 1200px;
+  height: 120vh;
+  object-fit: cover;
+  border-radius: 50%;
+  top: -60px;
+  left: 50px;
+  z-index: -2;
+  border: solid 10px var(--primary-color);
+  
+}
+.disc{
+  position: relative;
+  
+}
+.disc span{
+  width: 180px;
+  height: 180px;
+  z-index: 14px;
+  position: absolute;
+  background-color: #FAF8F6;
+  top: 42vh;
+  left: 550px;
+  border-radius: 50%;
+}

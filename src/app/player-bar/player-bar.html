@@ -1,0 +1,32 @@
+<section class="musicPlayer-Section-bar">
+  <div class="musicPlayer-Section-bar__info-music">
+    <ul>
+      <li class="playlist-element">
+        <span class="info-music playlist-element__photo" aria-hidden="true"></span>
+        <div class="info-music playlist-element__content-info">
+          <p class="info-music playlist-element__title">IMH</p>
+          <p class="info-music playlist-element__autor">V.I.M</p>
+        </div>
+        <p class="info-music playlist-element__time">3:45</p>
+      </li>
+    </ul>
+  </div>
+  <div class="musicPlayer-Section-bar__controls">
+    <audio id="song"></audio>
+    <input type="range" value="0" id="progress" />
+
+    <div class="controls">
+      <div id="lastest"><i class="fa-solid fa-backward"></i></div>
+      <div id="play">
+        <i class="fa-solid fa-circle-play" id="ctrlIcon"></i>
+      </div>
+      <div id="forward"><i class="fa-solid fa-forward"></i></div>
+    </div>
+  </div>
+
+  <div class="musicPlayer-Section-bar__volume-control">
+    <i class="fa-solid fa-volume-high"></i>
+    <input type="range" min="0" max="100" value="100" class="volume-slider" />
+    <output class="volume-percentage">100%</output>
+  </div>
+</section>
