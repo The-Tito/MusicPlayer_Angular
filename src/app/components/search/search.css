@@ -1,0 +1,22 @@
+
+#search-bar__container{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+#search-bar{
+    border-radius: 8px;
+    height: 30px;
+    width: 300px;
+}
+
+#search-button{
+    margin-left: 10px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: white;
+}

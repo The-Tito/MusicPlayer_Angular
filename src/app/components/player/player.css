@@ -1,0 +1,15 @@
+.musicPlayer-Section{
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.3fr;
+  height: 85vh;
+  color: white;
+  overflow: hidden; 
+  
+}
+
+
+
+
+.musicPlayer-Section__disc{
+  position: relative;
+}

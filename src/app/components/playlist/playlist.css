@@ -1,0 +1,37 @@
+
+.container-playlist > ul{
+  display: block;
+  width: 100%;
+  
+}
+.container-playlist > ul > li{
+  display: flex;
+  padding: 18px 0px 8px 10px;
+  width: 90%;
+  align-items: center;
+  text-align: start;
+  
+
+}
+.playlist-element__title{
+  font-size: 26px;
+}
+.playlist-element__content-info{
+  margin-left: 20px;
+}
+.playlist-element__time{
+  width: 100%;
+  display: flex;
+  justify-content:end ;
+  padding-right: 30px;
+}
+
+.playlist-element__photo{
+  border-radius: 20px;
+  width: 80px;
+  height: 80px;
+  background-image: url(/media/photos/guy.jpg);
+  flex-shrink: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+}

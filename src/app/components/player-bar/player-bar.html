@@ -1,0 +1,60 @@
+<section class="musicPlayer-Section-bar">
+  <div class="musicPlayer-Section-bar__info-music">
+    <ul>
+      <li class="playlist-element">
+        <span 
+        class="info-music playlist-element__photo"
+        [style.background-image]="'url(' + currentSong?.caratula + ')'">
+        aria-hidden="true">
+      </span>
+        <div class="info-music playlist-element__content-info">
+           <p class="info-music playlist-element__title">{{ currentSong?.song_name }}</p>
+        <p class="info-music playlist-element__autor">{{ currentSong?.artist_name }}</p>
+        </div>
+        <p class="info-music playlist-element__time">{{ currentSong?.duration }}</p>
+      </li>
+    </ul>
+  </div>
+  <div class="musicPlayer-Section-bar__controls">
+    <input 
+      #progressBar
+      type="range" 
+      id="progress" 
+      [value]="progressValue"
+      min="0" 
+      max="100" 
+      (input)="onProgressChange($event)">
+
+    <div class="controls">
+      
+
+      <button id="lastest" (click)="prevSong()">
+        <i class="fa-solid fa-backward"></i>
+      </button>
+      
+      <button id="play" (click)="togglePlayPause()">
+        @if (isPaused) {
+          <i id="ctrlIcon" class="fa-solid fa-circle-play"></i>
+        } @else {
+          <i id="ctrlIcon" class="fa-solid fa-circle-pause"></i>
+        }
+      </button>
+      
+      <button id="forward" (click)="nextSong()">
+        <i class="fa-solid fa-forward"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="musicPlayer-Section-bar__volume-control">
+    <input 
+        #volumeSlider
+        type="range" 
+        class="volume-slider"
+        [value]="volumePercentage"
+        min="0" 
+        max="100" 
+        (input)="onVolumeChange($event)">
+      <span class="volume-percentage">{{ volumePercentage }}%</span>
+  </div>
+</section>

@@ -1,0 +1,29 @@
+
+
+
+.disc img{
+  position: absolute;
+  width: 1200px;
+  height: 120vh;
+  object-fit: cover;
+  border-radius: 50%;
+  top: -60px;
+  left: 50px;
+  z-index: -2;
+  border: solid 10px var(--primary-color);
+  
+}
+.disc{
+  position: relative;
+  
+}
+.disc span{
+  width: 180px;
+  height: 180px;
+  z-index: 14px;
+  position: absolute;
+  background-color: #FAF8F6;
+  top: 42vh;
+  left: 550px;
+  border-radius: 50%;
+}
