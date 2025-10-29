@@ -1,5 +1,11 @@
-<div class="disc">
-      <img src="{{currentSong?.caratula}}" alt="{{currentSong?.song_name}}" />
-      <span></span>
-
-    </div>
+<!-- src/app/components/disc/disc.html -->
+@if (currentSong) {
+  <div class="disc">
+    <img [src]="currentSong.caratula" [alt]="currentSong.song_name" />
+    <span></span>
+  </div>
+} @else {
+  <div class="disc">
+    <p>No hay canción seleccionada</p>
+  </div>
+}

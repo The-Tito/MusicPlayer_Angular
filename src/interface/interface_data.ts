@@ -1,59 +1,70 @@
-import { Song } from "./interface_song";
-
-export class interfaceData{
-    private _discImg: HTMLImageElement | null = null;
-    private _infoTitle: HTMLElement | null = null;
-    private _infoArtist: HTMLElement | null = null;
-    private _infoPhoto: HTMLElement | null = null;
-    private _infoTime: HTMLElement | null = null;
-
-    public init(): void{
-        this._discImg = document.querySelector('.disc img') as HTMLImageElement;
-        this._infoTitle = document.querySelector('.info-music.playlist-element__title');
-        this._infoArtist = document.querySelector('.info-music.playlist-element__autor');
-        this._infoPhoto = document.querySelector('.info-music.playlist-element__photo');
-        this._infoTime = document.querySelector('.info-music.playlist-element__time');
-    }
-
-    public updateInterface(song: Song): void{
-        if (this._discImg) {
-            this._discImg.src = song.caratula;
-        }
-
-        if (this._infoArtist) {
-            this._infoArtist.textContent = song.infoArtist;
-        }
-
-        if (this._infoTitle) {
-            this._infoTitle.textContent = song.infoTitle
-        }
-
-        if (this._infoPhoto) {
-            this._infoPhoto.style.backgroundImage = `url(${song.caratula})`
-        }
-
-        if (this._infoTime){
-            this._infoTime.textContent = song.infoTime;
-        }
-    }
-
-    public updateActivePlaylistItem(index: number): void{
-        const allIntems = document.querySelectorAll('.playlist-element');
-        allIntems.forEach(item => item.classList.remove('active'));
-
-        const activeItem = document.querySelector(`.playlist-element[data-index="${index}"]`);
-        if (activeItem){
-            activeItem.classList.add('active');
-        }
-    }
-
+// src/app/core/models/spotify.models.ts
+export interface SpotifyTokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
 }
 
-export interface data{
-    song_name: string,
-    artist_name: string,
-    song_url: string,
-    caratula: string,
-    duration: string,
+export interface SpotifyImage {
+  url: string;
+  height: number;
+  width: number;
 }
 
+export interface SpotifyArtist {
+  id: string;
+  name: string;
+  type: 'artist';
+  uri: string;
+  images?: SpotifyImage[];
+  genres?: string[];
+  followers?: {
+    total: number;
+  };
+}
+
+export interface SpotifyAlbum {
+  id: string;
+  name: string;
+  type: 'album';
+  uri: string;
+  images: SpotifyImage[];
+  artists: SpotifyArtist[];
+  release_date: string;
+  total_tracks: number;
+}
+
+export interface SpotifyTrack {
+  id: string;
+  name: string;
+  type: 'track';
+  uri: string;
+  duration_ms: number;
+  artists: SpotifyArtist[];
+  album: SpotifyAlbum;
+  preview_url: string | null;
+}
+
+export interface SpotifySearchResponse {
+  tracks?: {
+    items: SpotifyTrack[];
+    total: number;
+  };
+  albums?: {
+    items: SpotifyAlbum[];
+    total: number;
+  };
+  artists?: {
+    items: SpotifyArtist[];
+    total: number;
+  };
+}
+
+// src/app/models/song.interface.ts
+export interface Song {
+  song_name: string;
+  artist_name: string;
+  song_url: string;
+  caratula: string;
+  duration: string;
+}

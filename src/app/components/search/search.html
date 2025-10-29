@@ -1,4 +1,107 @@
-<div id="search-bar__container">
-    <input type="text" name="" id="search-bar">
-    <button id="search-button">Buscar</button>
+<!-- src/app/components/search/search.component.html -->
+<div class="search-container">
+  <div class="search-input-wrapper">
+    <input 
+      type="text" 
+      placeholder="Buscar canciones, álbumes o artistas en Spotify..."
+      (input)="onSearchInput($event)"
+      class="search-input">
+    
+    @if (isLoading) {
+      <div class="loading-spinner">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+      </div>
+    }
+  </div>
+
+  @if (hasSearched && !isLoading) {
+    <div class="search-results">
+      
+      <!-- Sección de Tracks -->
+      @if (tracks.length > 0) {
+        <section class="results-section">
+          <h3>Canciones</h3>
+          <ul class="tracks-list">
+            @for (track of tracks; track track.id) {
+              <li class="track-item">
+                @if (track.album.images.length > 0) {
+                  <img 
+                    [src]="track.album.images[track.album.images.length - 1].url" 
+                    [alt]="track.name"
+                    class="track-image">
+                }
+                <div class="track-info">
+                  <p class="track-name">{{ track.name }}</p>
+                  <p class="track-artist">{{ getArtistNames(track.artists) }}</p>
+                </div>
+                <span class="track-duration">{{ formatDuration(track.duration_ms) }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      <!-- Sección de Álbumes -->
+      @if (albums.length > 0) {
+        <section class="results-section">
+          <h3>Álbumes</h3>
+          <ul class="albums-list">
+            @for (album of albums; track album.id) {
+              <li class="album-item">
+                @if (album.images.length > 0) {
+                  <img 
+                    [src]="album.images[album.images.length - 1].url" 
+                    [alt]="album.name"
+                    class="album-image">
+                }
+                <div class="album-info">
+                  <p class="album-name">{{ album.name }}</p>
+                  <p class="album-artist">{{ getArtistNames(album.artists) }}</p>
+                  <p class="album-year">{{ album.release_date.split('-')[0] }} • {{ album.total_tracks }} canciones</p>
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      <!-- Sección de Artistas -->
+      @if (artists.length > 0) {
+        <section class="results-section">
+          <h3>Artistas</h3>
+          <ul class="artists-list">
+            @for (artist of artists; track artist.id) {
+              <li class="artist-item">
+                @if (artist.images && artist.images.length > 0) {
+                  <img 
+                    [src]="artist.images[artist.images.length - 1].url" 
+                    [alt]="artist.name"
+                    class="artist-image">
+                } @else {
+                  <div class="artist-placeholder">
+                    <i class="fa-solid fa-user"></i>
+                  </div>
+                }
+                <div class="artist-info">
+                  <p class="artist-name">{{ artist.name }}</p>
+                  @if (artist.followers) {
+                    <p class="artist-followers">
+                      {{ artist.followers.total.toLocaleString() }} seguidores
+                    </p>
+                  }
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (tracks.length === 0 && albums.length === 0 && artists.length === 0) {
+        <div class="no-results">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <p>No se encontraron resultados</p>
+        </div>
+      }
+    </div>
+  }
 </div>

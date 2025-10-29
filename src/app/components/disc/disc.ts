@@ -12,12 +12,17 @@ export class Disc implements OnInit, OnDestroy {
   currentSong: Song | null = null;
   private destroy$ = new Subject<void>();
 
-  constructor(private audioService: AudioService) {}
+  constructor(private audioService: AudioService) {
+    console.log('DiscComponent constructor');
+  }
 
   ngOnInit(): void {
+    console.log('DiscComponent ngOnInit');
+    
     this.audioService.currentSong$
       .pipe(takeUntil(this.destroy$))
       .subscribe(song => {
+        console.log('Canción recibida en Disc:', song);
         this.currentSong = song;
       });
   }
