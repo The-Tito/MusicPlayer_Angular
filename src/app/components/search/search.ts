@@ -3,6 +3,7 @@ import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '../../../interface/in
 import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
 import { SpotifyApiService } from '../../services/spotify/spotify-api.service';
 import { SpotifyAuthService } from '../../services/spotify/spotify-auth.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -11,58 +12,42 @@ import { SpotifyAuthService } from '../../services/spotify/spotify-auth.service'
   styleUrl: './search.css'
 })
 export class Search implements OnInit, OnDestroy {
-  searchTerm$ = new Subject<string>();
-  
   tracks: SpotifyTrack[] = [];
   albums: SpotifyAlbum[] = [];
   artists: SpotifyArtist[] = [];
-  
   isLoading: boolean = false;
-  hasSearched: boolean = false;
+  searchQuery: string = '';
   
   private destroy$ = new Subject<void>();
 
   constructor(
+    private route: ActivatedRoute,
     private spotifyApiService: SpotifyApiService,
     private spotifyAuthService: SpotifyAuthService
   ) {}
 
   ngOnInit(): void {
     this.ensureAuthentication();
-    this.setupSearch();
-  }
-
-  private ensureAuthentication(): void {
-    if (!this.spotifyAuthService.hasValidToken()) {
-      this.spotifyAuthService.getClientCredentialsToken()
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: () => console.log('Token obtenido exitosamente'),
-          error: (err) => console.error('Error obteniendo token:', err)
-        });
-    }
-  }
-
-  private setupSearch(): void {
-    this.searchTerm$.pipe(
-      debounceTime(500),
-      distinctUntilChanged(),
+    
+    // Escuchar cambios en los query params (q=término)
+    this.route.queryParams.pipe(
       takeUntil(this.destroy$),
-      switchMap(term => {
-        if (term.trim() === '') {
+      switchMap(params => {
+        this.searchQuery = params['q'] || '';
+        
+        if (!this.searchQuery.trim()) {
           this.clearResults();
           return [];
         }
         
         this.isLoading = true;
-        return this.spotifyApiService.search(term, ['track', 'album', 'artist'], 10);
+        return this.spotifyApiService.search(this.searchQuery, ['track', 'album', 'artist'], 10);
       })
     ).subscribe({
       next: (results) => {
         this.tracks = results.tracks?.items || [];
         this.albums = results.albums?.items || [];
         this.artists = results.artists?.items || [];
-        this.hasSearched = true;
         this.isLoading = false;
       },
       error: (error) => {
@@ -72,16 +57,18 @@ export class Search implements OnInit, OnDestroy {
     });
   }
 
-  onSearchInput(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.searchTerm$.next(input.value);
+  private ensureAuthentication(): void {
+    if (!this.spotifyAuthService.hasValidToken()) {
+      this.spotifyAuthService.getClientCredentialsToken()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe();
+    }
   }
 
-  clearResults(): void {
+  private clearResults(): void {
     this.tracks = [];
     this.albums = [];
     this.artists = [];
-    this.hasSearched = false;
   }
 
   formatDuration(ms: number): string {

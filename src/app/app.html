@@ -1,3 +1,39 @@
-<div class="app-container">
-  <router-outlet></router-outlet>
-</div>
+<div class="app-wrapper">
+  
+  <header class="search-header">
+    <div class="search-container">
+      <input 
+        type="text" 
+        placeholder="Buscar canciones, álbumes o artistas en Spotify..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearchInput($event)"
+        (keyup.enter)="onSearch()"
+        class="search-input">
+      
+      <button 
+        (click)="onSearch()" 
+        class="search-button"
+        [disabled]="!searchQuery.trim()">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        Buscar
+      </button>
+
+      @if (isSearchRoute()) {
+        <button 
+          (click)="backToHome()" 
+          class="back-button">
+          <i class="fa-solid fa-arrow-left"></i>
+          Volver al Player
+        </button>
+      }
+    </div>
+  </header>
+
+  <!-- MAIN: Contenido dinámico según la ruta -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="player-controls-wrapper">
+    <app-player-bar></app-player-bar>
+  </footer>
