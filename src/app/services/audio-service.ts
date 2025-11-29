@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { SpotifyTrack } from '../../interface/interface_data';
 
 export interface Song {
   song_name: string;
@@ -7,13 +8,12 @@ export interface Song {
   song_url: string;
   caratula: string;
   duration: string;
+  spotifyId?: string;
 }
-
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class AudioService {
   private _lastSong: Song[] = [];
   private _nextSong: Song[] = [];
@@ -44,6 +44,26 @@ export class AudioService {
     this._controller.addEventListener('pause', () => {
       this.playStateSubject.next('paused');
     });
+  }
+
+  /**
+   * Convierte tracks de Spotify al formato Song local
+   */
+  convertSpotifyTracksToSongs(tracks: SpotifyTrack[], albumImage?: string): Song[] {
+    return tracks.map(track => ({
+      song_name: track.name,
+      artist_name: track.artists.map(a => a.name).join(', '),
+      song_url: track.preview_url || '', // Spotify solo da previews de 30s
+      caratula: albumImage || (track.album?.images?.[0]?.url || ''),
+      duration: this.formatDuration(track.duration_ms),
+      spotifyId: track.id
+    }));
+  }
+
+  private formatDuration(ms: number): string {
+    const minutes = Math.floor(ms / 60000);
+    const seconds = Math.floor((ms % 60000) / 1000);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }
 
   init(songs: Song[]): void {
@@ -81,7 +101,7 @@ export class AudioService {
   }
 
   loadSong(): void {
-    if (this._actualSong) {
+    if (this._actualSong && this._actualSong.song_url) {
       this._controller.src = this._actualSong.song_url;
       this._controller.load();
     }
@@ -92,7 +112,14 @@ export class AudioService {
       this._currentIndex = index;
       this._actualSong = this._allSongs[index];
       this.loadSong();
-      this._controller.play();
+      
+      // Solo reproducir si hay URL válida
+      if (this._actualSong.song_url) {
+        this._controller.play().catch(err => {
+          console.warn('No se puede reproducir:', err);
+        });
+      }
+      
       this.currentSongSubject.next(this._actualSong);
       this.currentIndexSubject.next(this._currentIndex);
       return this._actualSong;
@@ -101,7 +128,11 @@ export class AudioService {
   }
 
   play(): void {
-    this._controller.play();
+    if (this._actualSong?.song_url) {
+      this._controller.play().catch(err => {
+        console.warn('No se puede reproducir:', err);
+      });
+    }
   }
 
   pause(): void {
@@ -109,13 +140,18 @@ export class AudioService {
   }
 
   togglePlayPause(): 'playing' | 'paused' {
-    if (this._controller.paused) {
-      this._controller.play();
-      return 'playing';
-    } else {
-      this._controller.pause();
-      return 'paused';
+    if (this._actualSong?.song_url) {
+      if (this._controller.paused) {
+        this._controller.play().catch(err => {
+          console.warn('No se puede reproducir:', err);
+        });
+        return 'playing';
+      } else {
+        this._controller.pause();
+        return 'paused';
+      }
     }
+    return 'paused';
   }
 
   getCurrentSong(): Song | null {

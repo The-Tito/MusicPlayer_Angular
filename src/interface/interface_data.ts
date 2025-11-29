@@ -1,4 +1,3 @@
-// src/app/core/models/spotify.models.ts
 export interface SpotifyTokenResponse {
   access_token: string;
   token_type: string;
@@ -32,6 +31,10 @@ export interface SpotifyAlbum {
   artists: SpotifyArtist[];
   release_date: string;
   total_tracks: number;
+  tracks?: {
+    items: SpotifyTrack[];
+    total: number;
+  };
 }
 
 export interface SpotifyTrack {
@@ -41,8 +44,9 @@ export interface SpotifyTrack {
   uri: string;
   duration_ms: number;
   artists: SpotifyArtist[];
-  album: SpotifyAlbum;
+  album?: SpotifyAlbum;
   preview_url: string | null;
+  track_number?: number;
 }
 
 export interface SpotifySearchResponse {
@@ -67,4 +71,5 @@ export interface Song {
   song_url: string;
   caratula: string;
   duration: string;
+  spotifyId?: string;
 }

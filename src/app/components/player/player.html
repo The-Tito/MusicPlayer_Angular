@@ -1,5 +1,19 @@
 <div class="player-view">
-  <div class="player-main">
+  @if (isLoadingAlbum) {
+    <div class="loading-album">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      <p>Cargando álbum "La vida era más corta" de Milo J...</p>
+    </div>
+  }
+  
+  @if (albumError) {
+    <div class="album-error">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <p>No se pudo cargar el álbum de Spotify. Mostrando playlist local.</p>
+    </div>
+  }
+
+  <div class="player-main" [class.hidden]="isLoadingAlbum">
     <app-playlist></app-playlist>
     <app-disc></app-disc>
   </div>

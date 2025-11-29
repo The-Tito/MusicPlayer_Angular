@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '../../../interface/interface_data';
-import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
+import { Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { SpotifyApiService } from '../../services/spotify/spotify-api.service';
 import { SpotifyAuthService } from '../../services/spotify/spotify-auth.service';
 import { ActivatedRoute } from '@angular/router';
@@ -37,7 +37,8 @@ export class Search implements OnInit, OnDestroy {
         
         if (!this.searchQuery.trim()) {
           this.clearResults();
-          return [];
+          this.isLoading = false;
+          return of(null); // Retornar observable vacío en lugar de array
         }
         
         this.isLoading = true;
@@ -45,13 +46,16 @@ export class Search implements OnInit, OnDestroy {
       })
     ).subscribe({
       next: (results) => {
-        this.tracks = results.tracks?.items || [];
-        this.albums = results.albums?.items || [];
-        this.artists = results.artists?.items || [];
+        if (results) {
+          this.tracks = results.tracks?.items || [];
+          this.albums = results.albums?.items || [];
+          this.artists = results.artists?.items || [];
+        }
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error en búsqueda:', error);
+        this.clearResults();
         this.isLoading = false;
       }
     });
@@ -61,7 +65,10 @@ export class Search implements OnInit, OnDestroy {
     if (!this.spotifyAuthService.hasValidToken()) {
       this.spotifyAuthService.getClientCredentialsToken()
         .pipe(takeUntil(this.destroy$))
-        .subscribe();
+        .subscribe({
+          next: () => console.log('Autenticación exitosa'),
+          error: (error) => console.error('Error en autenticación:', error)
+        });
     }
   }
 
@@ -78,6 +85,9 @@ export class Search implements OnInit, OnDestroy {
   }
 
   getArtistNames(artists: SpotifyArtist[]): string {
+    if (!artists || artists.length === 0) {
+      return 'Artista desconocido';
+    }
     return artists.map(artist => artist.name).join(', ');
   }
 

@@ -16,13 +16,26 @@ export class Playlist implements OnInit, OnDestroy {
   constructor(private audioService: AudioService) {}
 
   ngOnInit(): void {
-    this.songs = this.audioService.getAllSongs();
+    // Obtener canciones iniciales
+    this.updateSongs();
 
+    // Suscribirse a cambios en el índice actual
     this.audioService.currentIndex$
       .pipe(takeUntil(this.destroy$))
       .subscribe(index => {
         this.currentIndex = index;
       });
+
+    // Suscribirse a cambios en la canción actual para actualizar la lista
+    this.audioService.currentSong$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.updateSongs();
+      });
+  }
+
+  private updateSongs(): void {
+    this.songs = this.audioService.getAllSongs();
   }
 
   onSongClick(index: number): void {

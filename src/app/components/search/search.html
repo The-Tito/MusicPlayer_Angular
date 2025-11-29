@@ -15,11 +15,15 @@
         <div class="results-grid">
           @for (track of tracks; track track.id) {
             <div class="result-card track-card">
-              @if (track.album.images.length > 0) {
+              @if (track.album?.images && track.album!!.images.length > 0) {
                 <img 
-                  [src]="track.album.images[0].url" 
+                  [src]="track.album!!.images[0].url" 
                   [alt]="track.name"
                   class="result-image">
+              } @else {
+                <div class="result-image track-placeholder">
+                  <i class="fa-solid fa-music"></i>
+                </div>
               }
               <div class="result-info">
                 <p class="result-title">{{ track.name }}</p>
@@ -39,11 +43,15 @@
         <div class="results-grid">
           @for (album of albums; track album.id) {
             <div class="result-card album-card">
-              @if (album.images.length > 0) {
+              @if (album.images && album.images.length > 0) {
                 <img 
                   [src]="album.images[0].url" 
                   [alt]="album.name"
                   class="result-image">
+              } @else {
+                <div class="result-image album-placeholder">
+                  <i class="fa-solid fa-compact-disc"></i>
+                </div>
               }
               <div class="result-info">
                 <p class="result-title">{{ album.name }}</p>
